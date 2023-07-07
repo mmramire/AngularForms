@@ -1,23 +1,56 @@
 <form [formGroup]="form" (ngSubmit)="save($event)">
-<p>
-Name: {{ nameField.value }} {{ nameField.valid }}
-<!-- las clases las llamo mediante los getters para escribir menos código -->
-<input
-      [class.is-valid]="isNameFieldValid" 
-      [class.is-invalid]="isNameFieldInvalid"
-      type="text"
-      formControlName="name"/>
-<button [disabled]="nameField.invalid" (click)="getNameValue()">Get value</button>
+    <div formGroupName="fullName">
 
-</p>
-<div class="messages" [class.active]="isNameFieldInvalid">
-<p>
-<strong *ngIf="nameField.touched && nameField.hasError('required')">Este campo es requerido</strong>
-</p>
-<p>
-<strong *ngIf="nameField.touched && nameField.hasError('maxlength')">debe tener maximo 10 c</strong>
-</p>
-</div>
+        <p>
+        Name: {{ nameField.value }} {{ nameField.valid }}
+        <!-- las clases las llamo mediante los getters para escribir menos código -->
+        <input
+              [class.is-valid]="isNameFieldValid" 
+              [class.is-invalid]="isNameFieldInvalid"
+              type="text"
+              formControlName="name"/>
+        <button [disabled]="nameField.invalid" (click)="getNameValue()">Get value</button>
+        
+        </p>
+        <div class="messages" [class.active]="isNameFieldInvalid">
+        <p>
+        <strong *ngIf="nameField.touched && nameField.hasError('required')">Este campo es requerido</strong>
+        </p>
+        <p>
+        <strong *ngIf="nameField.touched && nameField.hasError('maxlength')">debe tener maximo 10 caracteres</strong>
+        </p>
+            <p>
+        <strong *ngIf="nameField.touched && nameField.hasError('pattern')">No cumple el pattern</strong>
+        </p>
+        </div>
+
+        <p>
+        Last: {{ lastField.value }} {{ lastField.valid }}
+        <!-- las clases las llamo mediante los getters para escribir menos código -->
+        <input
+              [class.is-valid]="isLastFieldValid" 
+              [class.is-invalid]="isLastFieldInvalid"
+              type="text"
+              formControlName="last"/>
+        <button [disabled]="lastField.invalid" (click)="getNameValue()">Get value</button>
+        
+        </p>
+        <div class="messages" [class.active]="isLastFieldInvalid">
+        <p>
+        <strong *ngIf="lastField.touched && lastField.hasError('required')">Este campo es requerido</strong>
+        </p>
+            <p>
+        <strong *ngIf="lastField.touched && lastField.hasError('pattern')">No cumple el pattern</strong>
+        </p>
+        <p>
+        <strong *ngIf="lastField.touched && lastField.hasError('maxlength')">debe tener maximo 10 caracteres</strong>
+        </p>
+        </div>
+
+
+
+
+    </div>
 <p>
 Email: {{ emailField.value }}
 <input type="email" formControlName="email"/>
@@ -37,7 +70,7 @@ Phone: {{ phoneField.value }}
 
 <p>
 Age: {{ ageField.value }}
-<input type="number" formControlName="ageField"/>
+<input type="number" formControlName="age"/>
 </p>
 <div class="messages" [class.active]="ageField.touched && ageField.invalid">
 <p><strong *ngIf="ageField.hasError('required')">Edad requerida </strong></p>    

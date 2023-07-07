@@ -34,13 +34,13 @@ export class BasicFormComponent implements OnInit {
 
   ngOnInit(): void {
     //para escuchar un formControl individual
-    this.nameField.valueChanges.subscribe((value) => {
-      console.log(value);
-    });
-    //para escuchar un formGroup completo
-    // this.form.valueChanges.subscribe((value) => {
+    // this.nameField.valueChanges.subscribe((value) => {
     //   console.log(value);
     // });
+    //para escuchar un formGroup completo
+    this.form.valueChanges.subscribe((value) => {
+      console.log(value);
+    });
   }
 
   getNameValue() {
@@ -59,7 +59,26 @@ export class BasicFormComponent implements OnInit {
 
   private buildForm() {
     this.form = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.maxLength(10)]],
+      // name: ['', [Validators.required, Validators.maxLength(10)]],
+      fullName: this.formBuilder.group({
+        name: [
+          '',
+          [
+            Validators.required,
+            Validators.maxLength(10),
+            Validators.pattern(/^[a-zA-Z]+$/),
+          ],
+        ],
+        last: [
+          '',
+          [
+            Validators.required,
+            Validators.maxLength(10),
+            Validators.pattern(/^[a-zA-Z]+$/),
+          ],
+        ],
+      }),
+
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required]],
       color: ['#000000'],
@@ -73,8 +92,15 @@ export class BasicFormComponent implements OnInit {
     });
   }
 
+  // get nameField() {
+  //   return this.form.get('name');
+  // }
   get nameField() {
-    return this.form.get('name');
+    return this.form.get('fullName').get('name');
+  }
+
+  get lastField() {
+    return this.form.get('fullName').get('last');
   }
 
   get isNameFieldValid() {
@@ -83,6 +109,14 @@ export class BasicFormComponent implements OnInit {
 
   get isNameFieldInvalid() {
     return this.nameField.touched && this.nameField.invalid;
+  }
+
+  get isLastFieldValid() {
+    return this.lastField.touched && this.lastField.valid;
+  }
+
+  get isLastFieldInvalid() {
+    return this.lastField.touched && this.lastField.invalid;
   }
 
   get emailField() {
