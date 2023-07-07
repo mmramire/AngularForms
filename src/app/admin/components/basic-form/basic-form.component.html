@@ -22,7 +22,10 @@ Name: {{ nameField.value }} {{ nameField.valid }}
 Email: {{ emailField.value }}
 <input type="email" formControlName="email"/>
 </p>
-
+<div class="messages" [class.active]="emailField.touched && emailField.invalid">
+<p><strong *ngIf="emailField.hasError('required')">Este campo email es requerido </strong></p>    
+<p><strong *ngIf="emailField.hasError('email')">Email inválido </strong></p>    
+</div>
 
 <p>
 Phone: {{ phoneField.value }}
@@ -32,9 +35,20 @@ Phone: {{ phoneField.value }}
 <p><strong *ngIf="phoneField.touched && phoneField.hasError('required')">Este campo es requerido sí o sí </strong></p>    
 </div>
 
+<p>
+Age: {{ ageField.value }}
+<input type="number" formControlName="ageField"/>
+</p>
+<div class="messages" [class.active]="ageField.touched && ageField.invalid">
+<p><strong *ngIf="ageField.hasError('required')">Edad requerida </strong></p>    
+<p><strong *ngIf="ageField.hasError('min')">Debe ser mayor de 18 </strong></p>    
+<p><strong *ngIf="ageField.hasError('max')">Debe ser menor a 100 </strong></p>    
+</div>
 
-
-
+<p>
+Agree: {{ agreeField.value }}
+<input type="checkbox" formControlName="agree"/>
+</p>
 
 <p>
 Color: {{ colorField.value }}
