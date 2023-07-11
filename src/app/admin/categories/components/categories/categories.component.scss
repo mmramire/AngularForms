@@ -1,0 +1,18 @@
+.contenedor-imagen {
+  width: 200px; /* Establece el ancho deseado para el contenedor */
+  height: 200px; /* Permite que la altura se ajuste automáticamente */
+}
+
+.contenedor-imagen img {
+  max-width: 100%; /* La imagen no se desbordará del contenedor */
+  height: auto; /* La altura se ajustará automáticamente para mantener la proporción */
+}
+
+mat-grid-tile {
+  background: lightblue;
+}
+
+.tile {
+  max-width: 400px;
+  margin-bottom: 8px;
+}

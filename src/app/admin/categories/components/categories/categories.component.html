@@ -1,1 +1,34 @@
 <a routerLink="create">Crear categorías</a>
+
+<!-- Cargar en tarjetas dinámicamente las categorías -->
+//<!--
+  TODO: Alinear el contenido de la tarjeta, le falta cosmética
+-->
+<mat-grid-list cols="2" rowHeight="2:1">
+  <mat-grid-tile *ngFor="let item of categories">
+    <mat-card-header>
+      <mat-card-title cols="2">
+        {{ item.name | uppercase }}
+      </mat-card-title>
+    </mat-card-header>
+    <div>
+      <mat-card-content>ID: {{ item.id }}</mat-card-content>
+    </div>
+    <div>
+      <mat-card-content>Nombre: {{ item.name }}</mat-card-content>
+    </div>
+    <div>
+      <mat-card-content>Creado: {{ item.creationAt | date }}</mat-card-content>
+    </div>
+    <div class="contenedor-imagen">
+      <img mat-card-md-image [src]="item.image" />
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<!-- <ul>
+  <li>{{item.id}}</li>
+  <li>{{item.image}}</li>
+  <li>{{item.creationAt}}</li>
+  <li>{{item.updatedAt}}</li>
+</ul> -->
