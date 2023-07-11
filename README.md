@@ -29,3 +29,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Usuario-Contraseña para ingresar al admin
 
 admin@mail.com - admin123
+
+## Nueva API de categorias en enviroment
+
+https://api.escuelajs.co/api/v1/categories
