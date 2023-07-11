@@ -1,3 +1,9 @@
+form {
+  mat-form-field {
+    width: 100%;
+  }
+}
+
 input {
   &.is-valid {
     border: 2px solid green;

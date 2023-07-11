@@ -3,6 +3,8 @@
     <mat-card-header>
       <mat-card-title>Registro</mat-card-title>
     </mat-card-header>
+
+    <!-- Parte de validaciones personalizadas -->
     <mat-card-content>
       <div class="row">
         <div class="col-xs">
@@ -17,17 +19,48 @@
           <mat-form-field>
             <mat-label>Password</mat-label>
             <input placeholder="password" formControlName="password" matInput type="password">
+            <!-- Mostramos los mensajes dentro de un div ya que pueden ser varios -->
+            <div *ngIf="form.get('password').touched && form.get('password').invalid">
+              <mat-error *ngIf="form.get('password').hasError('invalid_password')">Debe tener un número</mat-error>
+            </div>
           </mat-form-field>
         </div>
       </div>
+
+      <!-- Parte de validación grupal -->
+
       <div class="row">
         <div class="col-xs">
           <mat-form-field>
             <mat-label>Confirm Password</mat-label>
-            <input placeholder="password" formControlName="password" matInput type="password">
+            <input placeholder="confirm password" formControlName="confirmPassword" matInput type="password">
+             <div *ngIf="form.get('confirmPassword').touched && form.errors">
+              <mat-error *ngIf="form.hasError('match_password')">No hace match</mat-error>
+            </div>
           </mat-form-field>
         </div>
       </div>
+
+      <!-- Parte de validaciones condicionadas -->
+      <div class="row">
+        <div class="col-xs">
+          <mat-radio-group formControlName="type" aria-label="Select an option">
+              <mat-radio-button value="company">Company</mat-radio-button>
+              <mat-radio-button value="customer">Customer</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+       <div class="row">
+        <div class="col-xs">
+          <mat-form-field>
+            <mat-label>Company name</mat-label>
+            <input placeholder="Company" formControlName="companyName" matInput type="text">
+          </mat-form-field>
+        </div>
+      </div>
+
+
     </mat-card-content>
     <mat-card-actions>
       <button [disabled]="form.invalid" mat-raised-button type="submit">Registro</button>
