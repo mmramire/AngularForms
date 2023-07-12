@@ -1,10 +1,82 @@
 <a routerLink="create">Crear categorías</a>
 
+<!-- Armo los datos en una tabla -->
+
+<table mat-table [dataSource]="categories" class="mat-elevation-z8 demo-table">
+  <!-- ID Column -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>No.</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <!-- creationAt Column -->
+  <ng-container matColumnDef="creationAt">
+    <th mat-header-cell *matHeaderCellDef>Created</th>
+    <td mat-cell *matCellDef="let element">{{ element.creationAt | date }}</td>
+  </ng-container>
+
+  <!-- Image Column -->
+  <ng-container matColumnDef="image">
+    <th mat-header-cell *matHeaderCellDef>Image</th>
+    <td mat-cell *matCellDef="let element">
+      <img src="{{ element.image }}" class="contenedor-imagen" />
+    </td>
+  </ng-container>
+
+  <!-- Action Column -->
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let element">
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="editarCategoria($event)"
+      >
+        Editar
+      </button>
+
+      <button
+        mat-stroked-button
+        color="warn"
+        (click)="eliminarCategoria($event)"
+      >
+        Eliminar
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    (click)="clickedRows.add(row)"
+    [class.demo-row-is-clicked]="clickedRows.has(row)"
+    *matRowDef="let row; columns: displayedColumns"
+  ></tr>
+</table>
+
+<div>
+  <h3>Click Log</h3>
+</div>
+
+<div *ngIf="!clickedRows.size">Clicked rows will be logged here</div>
+
+<ul>
+  <li *ngFor="let clickedRow of clickedRows">
+    Clicked on {{ clickedRow.name }}
+  </li>
+</ul>
+
 <!-- Cargar en tarjetas dinámicamente las categorías -->
-//<!--
+<!--
   TODO: Alinear el contenido de la tarjeta, le falta cosmética
 -->
-<mat-grid-list cols="2" rowHeight="2:1">
+<!-- <mat-grid-list cols="2" rowHeight="2:1">
   <mat-grid-tile *ngFor="let item of categories">
     <mat-card-header>
       <mat-card-title cols="2">
@@ -24,7 +96,7 @@
       <img mat-card-md-image [src]="item.image" />
     </div>
   </mat-grid-tile>
-</mat-grid-list>
+</mat-grid-list> -->
 
 <!-- <ul>
   <li>{{item.id}}</li>
