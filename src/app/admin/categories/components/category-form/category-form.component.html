@@ -1,3 +1,7 @@
+
+<div class="mat-align-center">
+  <!-- Contenido del div -->
+
 <form [formGroup]="form" (ngSubmit)="save()">
   <mat-card>
     <mat-card-header>
@@ -21,13 +25,20 @@
               <mat-error *ngIf="nameField.hasError('required')">
                 Este campo es requerido
               </mat-error>
+               <mat-error *ngIf="nameField.hasError('minLength')">
+                Minimo 4 caracteres
+              </mat-error>
+               <mat-error *ngIf="nameField.hasError('not_available')">
+                Esta categoría no está disponible para usar
+              </mat-error>
             </div>
           </mat-form-field>
         </div>
       </div>
       <div class="row">
         <div class="col-xs">
-          <img *ngIf="imageField.value" [src]="imageField.value" />
+          <!-- <img *ngIf="imageField.value" [src]="imageField.value" /> -->
+          <img *ngIf="(image$ | async) as image" [src]="image" />
           <input
             (change)="uploadFile($event)"
             placeholder="Image"
@@ -46,7 +57,8 @@
       </div>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button type="submit">Guardar categoría</button>
+      <button mat-stroked-button color="primary" type="submit">Guardar categoría</button>
     </mat-card-actions>
   </mat-card>
 </form>
+</div>

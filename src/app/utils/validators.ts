@@ -1,4 +1,7 @@
 import { AbstractControl } from '@angular/forms';
+import { CategoriesService } from '../core/services/categories.service';
+import { map } from 'rxjs/operators';
+import { Category } from '../core/models/category.model';
 
 export class MyValidators {
   static isPriceValid(control: AbstractControl) {
@@ -29,6 +32,44 @@ export class MyValidators {
       return { invalid_password: true };
     }
     return null;
+  }
+
+  // static validateCategory(service: CategoriesService){
+  //   // hay que retornar una fn como tal para ser ejecutada luego, Closure.
+  //   return (control: AbstractControl) => {
+  //     const value = control.value;
+  //     return service.checkCategory(value).pipe(
+  //       // transformamos al formato que necesita nuestra petición
+  //       .map( (response: any) => {
+  //         const isAvailable = response.isAvailable;
+  //         if (!isAvailable) {
+  //           return {not_available: true}
+  //         }
+  //         return null;
+  //       })
+  //     )
+  //   }
+  // }
+
+  //Versión que soluciona la falta de funcionamiento del EP.
+  static validateCategory(service: CategoriesService) {
+    // hay que retornar una fn como tal para ser ejecutada luego, Closure.
+    return (control: AbstractControl) => {
+      const valorNuevaCategoria = control.value;
+      return service.getAllCategories().pipe(
+        // transformamos al formato que necesita nuestra petición
+        map((categories) => {
+          const noDisponible = categories.find(
+            (category) =>
+              category.name.toUpperCase() === valorNuevaCategoria.toUpperCase()
+          );
+          if (noDisponible === undefined) {
+            return null;
+          }
+          return { not_available: true };
+        })
+      );
+    };
   }
 }
 

@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoriesService } from './../../../../core/services/categories.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { finalize } from 'rxjs/operators';
+import { MyValidators } from 'src/app/utils/validators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-category-form',
@@ -13,6 +15,7 @@ import { finalize } from 'rxjs/operators';
 })
 export class CategoryFormComponent implements OnInit {
   form: FormGroup;
+  image$: Observable<string>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,7 +30,11 @@ export class CategoryFormComponent implements OnInit {
 
   private buildForm() {
     this.form = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: [
+        '',
+        [Validators.required, Validators.min(4)],
+        MyValidators.validateCategory(this.categoriesService), //async - le tengo que mandar el servicio
+      ],
       image: ['', Validators.required],
     });
   }
@@ -48,6 +55,29 @@ export class CategoryFormComponent implements OnInit {
     }
   }
 
+  // uploadFile(event: any) {
+  //   const image = event.target.files[0];
+  //   const name = image.name;
+  //   const ref = this.storage.ref(name);
+  //   const task = this.storage.upload(name, image);
+
+  //   // nos da un observable que podemos leer los cambios
+  //   task
+  //     .snapshotChanges()
+  //     .pipe(
+  //       finalize(() => {
+  //         const urlImage$ = ref.getDownloadURL();
+  //         urlImage$.subscribe((url) => {
+  //           console.log(url);
+  //           // lleno el formControl
+  //           this.imageField.setValue(url);
+  //         });
+  //       })
+  //     )
+  //     .subscribe();
+  // }
+
+  // para la modificación en el html
   uploadFile(event: any) {
     const image = event.target.files[0];
     const name = image.name;
@@ -59,8 +89,8 @@ export class CategoryFormComponent implements OnInit {
       .snapshotChanges()
       .pipe(
         finalize(() => {
-          const urlImage$ = ref.getDownloadURL();
-          urlImage$.subscribe((url) => {
+          this.image$ = ref.getDownloadURL();
+          this.image$.subscribe((url) => {
             console.log(url);
             // lleno el formControl
             this.imageField.setValue(url);

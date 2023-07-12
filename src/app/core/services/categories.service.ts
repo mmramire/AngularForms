@@ -26,4 +26,9 @@ export class CategoriesService {
       data
     );
   }
+
+  // No funciona el EP
+  // checkCategory(name: string) {
+  //   return this.http.post(`${environment.url_api}/categories/availabitily`, {name});
+  // }
 }
