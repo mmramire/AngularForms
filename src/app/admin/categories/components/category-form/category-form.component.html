@@ -37,8 +37,9 @@
       </div>
       <div class="row">
         <div class="col-xs">
-          <!-- <img *ngIf="imageField.value" [src]="imageField.value" /> -->
-          <img *ngIf="(image$ | async) as image" [src]="image" />
+          <!-- Con este version me sirve para form modo create/edit -->
+          <img *ngIf="imageField.value" [src]="imageField.value" />
+          <!-- <img *ngIf="(image$ | async) as image" [src]="image" /> -->
           <input
             (change)="uploadFile($event)"
             placeholder="Image"

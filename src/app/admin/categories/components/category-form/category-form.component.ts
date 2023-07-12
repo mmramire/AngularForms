@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { CategoriesService } from './../../../../core/services/categories.service';
@@ -16,17 +16,26 @@ import { Observable } from 'rxjs';
 export class CategoryFormComponent implements OnInit {
   form: FormGroup;
   image$: Observable<string>;
+  categoryId: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private categoriesService: CategoriesService,
     private router: Router,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private activatedRoute: ActivatedRoute //para leer parámetros que vienen en la ruta
   ) {
     this.buildForm();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.activatedRoute.params.subscribe((params: Params) => {
+      this.categoryId = params.id;
+      if (this.categoryId) {
+        this.getCategory();
+      }
+    });
+  }
 
   private buildForm() {
     this.form = this.formBuilder.group({
@@ -113,5 +122,14 @@ export class CategoryFormComponent implements OnInit {
         alert(error);
       }
     );
+  }
+
+  private getCategory() {
+    this.categoriesService.getCategory(this.categoryId).subscribe((data) => {
+      console.log(data);
+      // Acá actualizo todo el form de una
+      this.form.patchValue(data);
+      // La otra opción es campo a campo this.nameField.setValue(data.name); etc..,etc..
+    });
   }
 }
