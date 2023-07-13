@@ -58,7 +58,8 @@ export class CategoryFormComponent implements OnInit {
 
   save() {
     if (this.form.valid) {
-      this.createCategory();
+      // Si hay :id es edición, sino creación
+      this.categoryId ? this.updateCategory() : this.createCategory();
     } else {
       this.form.markAllAsTouched();
     }
@@ -113,6 +114,21 @@ export class CategoryFormComponent implements OnInit {
   private createCategory() {
     const data = this.form.value;
     this.categoriesService.createCategory(data).subscribe(
+      (result) => {
+        if (result) {
+          this.router.navigate(['/admin/categories']);
+        }
+      },
+      (error) => {
+        alert(error);
+      }
+    );
+  }
+
+  //Podría poner un Toastr para avisar que se actualizó correctamente. Método cuando entro por EDIT
+  private updateCategory() {
+    const data = this.form.value;
+    this.categoriesService.updateCategory(this.categoryId, data).subscribe(
       (result) => {
         if (result) {
           this.router.navigate(['/admin/categories']);

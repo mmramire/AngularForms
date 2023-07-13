@@ -25,7 +25,7 @@ export class CategoriesService {
   }
 
   updateCategory(id: string, data: Partial<Category>) {
-    return this.http.post<Category>(
+    return this.http.put<Category>(
       `${environment.url_api}/categories/${id}`,
       data
     );

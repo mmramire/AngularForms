@@ -20,15 +20,4 @@ export class CategoriesComponent implements OnInit {
   }
 
   clickedRows = new Set<Category>();
-
-  editarCategoria(event: any) {
-    alert('Editar');
-  }
-  eliminarCategoria(event: any) {
-    alert('Editar');
-  }
-
-  // TODO: Hacer el estilo del litado
-  // TODO: Cambiar el nombre del archivo para que sea random y evite conflicto
-  // TODO: Input file mejorado en estetica
 }
