@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { CategoriesService } from './../../../../core/services/categories.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { finalize } from 'rxjs/operators';
 import { MyValidators } from 'src/app/utils/validators';
 import { Observable } from 'rxjs';
+import { Category } from 'src/app/core/models/category.model';
+import { CategoriesService } from 'src/app/core/services/categories.service';
 
 @Component({
   selector: 'app-category-form',
@@ -16,26 +16,28 @@ import { Observable } from 'rxjs';
 export class CategoryFormComponent implements OnInit {
   form: FormGroup;
   image$: Observable<string>;
+  isNew = true;
+
+  @Input() set category(data: Category) {
+    if (data) {
+      this.isNew = false;
+      this.form.patchValue(data);
+    }
+  }
+  @Output() create = new EventEmitter();
+  @Output() update = new EventEmitter();
+
   categoryId: string;
 
   constructor(
+    private categoriesService: CategoriesService, //se deja como excepcion en DUMB component por Validador asincrono en Form.
     private formBuilder: FormBuilder,
-    private categoriesService: CategoriesService,
-    private router: Router,
-    private storage: AngularFireStorage,
-    private activatedRoute: ActivatedRoute //para leer parámetros que vienen en la ruta
+    private storage: AngularFireStorage
   ) {
     this.buildForm();
   }
 
-  ngOnInit(): void {
-    this.activatedRoute.params.subscribe((params: Params) => {
-      this.categoryId = params.id;
-      if (this.categoryId) {
-        this.getCategory();
-      }
-    });
-  }
+  ngOnInit(): void {}
 
   private buildForm() {
     this.form = this.formBuilder.group({
@@ -59,33 +61,13 @@ export class CategoryFormComponent implements OnInit {
   save() {
     if (this.form.valid) {
       // Si hay :id es edición, sino creación
-      this.categoryId ? this.updateCategory() : this.createCategory();
+      !this.isNew
+        ? this.update.emit(this.form.value)
+        : this.create.emit(this.form.value);
     } else {
       this.form.markAllAsTouched();
     }
   }
-
-  // uploadFile(event: any) {
-  //   const image = event.target.files[0];
-  //   const name = image.name;
-  //   const ref = this.storage.ref(name);
-  //   const task = this.storage.upload(name, image);
-
-  //   // nos da un observable que podemos leer los cambios
-  //   task
-  //     .snapshotChanges()
-  //     .pipe(
-  //       finalize(() => {
-  //         const urlImage$ = ref.getDownloadURL();
-  //         urlImage$.subscribe((url) => {
-  //           console.log(url);
-  //           // lleno el formControl
-  //           this.imageField.setValue(url);
-  //         });
-  //       })
-  //     )
-  //     .subscribe();
-  // }
 
   // para la modificación en el html
   uploadFile(event: any) {
@@ -108,44 +90,5 @@ export class CategoryFormComponent implements OnInit {
         })
       )
       .subscribe();
-  }
-
-  //Podría poner un Toastr para avisar que se creo correctamente. Lo normal es hacer redirección cuando se creo el recurso.
-  private createCategory() {
-    const data = this.form.value;
-    this.categoriesService.createCategory(data).subscribe(
-      (result) => {
-        if (result) {
-          this.router.navigate(['/admin/categories']);
-        }
-      },
-      (error) => {
-        alert(error);
-      }
-    );
-  }
-
-  //Podría poner un Toastr para avisar que se actualizó correctamente. Método cuando entro por EDIT
-  private updateCategory() {
-    const data = this.form.value;
-    this.categoriesService.updateCategory(this.categoryId, data).subscribe(
-      (result) => {
-        if (result) {
-          this.router.navigate(['/admin/categories']);
-        }
-      },
-      (error) => {
-        alert(error);
-      }
-    );
-  }
-
-  private getCategory() {
-    this.categoriesService.getCategory(this.categoryId).subscribe((data) => {
-      console.log(data);
-      // Acá actualizo todo el form de una
-      this.form.patchValue(data);
-      // La otra opción es campo a campo this.nameField.setValue(data.name); etc..,etc..
-    });
   }
 }
