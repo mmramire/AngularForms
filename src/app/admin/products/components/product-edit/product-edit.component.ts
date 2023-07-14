@@ -4,32 +4,36 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { MyValidators } from './../../../../utils/validators';
 import { ProductsService } from './../../../../core/services/products/products.service';
+import { Category } from 'src/app/core/models/category.model';
+import { CategoriesService } from 'src/app/core/services/categories.service';
 
 @Component({
   selector: 'app-product-edit',
   templateUrl: './product-edit.component.html',
-  styleUrls: ['./product-edit.component.scss']
+  styleUrls: ['./product-edit.component.scss'],
 })
 export class ProductEditComponent implements OnInit {
-
   form: FormGroup;
   id: string;
+  categories: Category[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private productsService: ProductsService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private categoriesService: CategoriesService
   ) {
     this.buildForm();
   }
 
   ngOnInit() {
+    this.getCategories();
     this.activatedRoute.params.subscribe((params: Params) => {
       this.id = params.id;
-      this.productsService.getProduct(this.id)
-      .subscribe(product => {
+      this.productsService.getProduct(this.id).subscribe((product) => {
         this.form.patchValue(product);
+        this.categoryIdField.setValue(product?.category.id);
       });
     });
   }
@@ -38,11 +42,12 @@ export class ProductEditComponent implements OnInit {
     event.preventDefault();
     if (this.form.valid) {
       const product = this.form.value;
-      this.productsService.updateProduct(this.id, product)
-      .subscribe((newProduct) => {
-        console.log(newProduct);
-        this.router.navigate(['./admin/products']);
-      });
+      this.productsService
+        .updateProduct(this.id, product)
+        .subscribe((newProduct) => {
+          console.log(newProduct);
+          this.router.navigate(['./admin/products']);
+        });
     }
   }
 
@@ -51,8 +56,9 @@ export class ProductEditComponent implements OnInit {
       id: ['', [Validators.required]],
       title: ['', [Validators.required]],
       price: ['', [Validators.required, MyValidators.isPriceValid]],
-      image: [''],
+      images: [''],
       description: ['', [Validators.required]],
+      categoryId: ['', [Validators.required]],
     });
   }
 
@@ -60,4 +66,21 @@ export class ProductEditComponent implements OnInit {
     return this.form.get('price');
   }
 
+  get categoryIdField() {
+    return this.form.get('categoryId');
+  }
+
+  private getCategories() {
+    this.categoriesService.getAllCategories().subscribe(
+      (result) => {
+        if (result) {
+          this.categories = result;
+        }
+      },
+      (error) => {
+        console.error(error);
+        alert('Algo falló en getCategories()');
+      }
+    );
+  }
 }
